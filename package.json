@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
+    "seed": "zsh ./bin/data",
     "process-seasons": "node lib/processors/index.js",
     "debug-seasons": "node inspect lib/processors/index.js"
   },
