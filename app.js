@@ -7,9 +7,6 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 const path = require('path');
 
-const indexRouter = require('./app/routes/index');
-const usersRouter = require('./app/routes/users');
-
 const app = express();
 
 // APP SETUP
@@ -31,28 +28,23 @@ const db = mongoose.connection;
 
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
-  console.log('we landed on the moon!');
+  console.log('*** we landed on the moon! ***');
 });
-
-const seasonSchema = new mongoose.Schema({
-  id: String,
-  number: String,
-  judge_ids: Array,
-  contestant_ids: Array,
-  episode_ids: Array
-})
-
-const Season = mongoose.model('Season', seasonSchema);
-
-const season2 = Season.findOne({ number: '2' }, function (error, result) {
-  console.log(result.id);
-});
-
-
 
 // END POINTS
+const indexRouter = require('./app/routes/index');
+const seasonsRouter = require('./app/routes/seasons');
+const episodesRouter = require('./app/routes/episodes');
+const contestantsRouter = require('./app/routes/contestants');
+const participantsRouter = require('./app/routes/participants');
+const judgesRouter = require('./app/routes/judges');
+
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/seasons', seasonsRouter);
+app.use('/episodes', episodesRouter);
+app.use('/contestants', contestantsRouter);
+app.use('/participants', participantsRouter);
+app.use('/judges', judgesRouter);
 
 // API ERROR HANDLING
 app.use(function (req, res, next) {
