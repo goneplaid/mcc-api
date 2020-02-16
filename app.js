@@ -7,8 +7,8 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 const path = require('path');
 
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+const indexRouter = require('./app/routes/index');
+const usersRouter = require('./app/routes/users');
 
 const app = express();
 
@@ -21,7 +21,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors({ origin: 'http://localhost:7000' }));
 
 // VIEW ENGINE
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'app/views'));
 app.set('view engine', 'jade');
 
 // DATABASE
