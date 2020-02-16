@@ -13,3 +13,5 @@ lib/fixtures
 
 # misc
 **/.DS_Store
+
+config/development.json
