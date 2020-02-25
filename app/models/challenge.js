@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const challengeSchema = new Schema({
-  id: String,
+  //id: String,
   type: String,
   episode_id: String,
   participant_ids: Array,

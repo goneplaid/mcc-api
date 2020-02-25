@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const episodeSchema = new Schema({
-  id: String,
+  //id: String,
   number: String,
   name: String,
   air_date: String,

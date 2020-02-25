@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const contestantSchema = new Schema({
-  id: String,
+  //id: String,
   name: String,
   age: Number,
   hometown: String,
