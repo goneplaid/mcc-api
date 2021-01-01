@@ -4,8 +4,8 @@ const config = require('config');
 const createError = require('http-errors');
 const express = require('express');
 const logger = require('morgan');
-const mongoose = require('mongoose');
 const path = require('path');
+const seasonsRoute = require('./app/routes/seasons');
 
 const app = express();
 
@@ -17,20 +17,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors({ origin: 'http://localhost:7000' }));
 
-
-// DATABASE
-mongoose.connect(config.database.connectionString, { useNewUrlParser: true });
-
-const db = mongoose.connection;
-
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function () {
-  console.log('*** we landed on the moon! ***');
-});
-
 // END POINTS
-
-// todo: define all the things!
+app.use(seasonsRoute);
 
 // API ERROR HANDLING
 app.use(function (req, res, next) {
@@ -44,7 +32,6 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
 });
 
 module.exports = app;
