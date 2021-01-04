@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const seasonModel = require('../models/season');
-const JSONAPISerializer = require('jsonapi-serializer').Serializer;
+const {
+  model,
+  serializer
+} = require('../models/season');
 const mongoose = require('mongoose');
 const config = require('config');
 
@@ -14,21 +16,12 @@ db.once('open', function () {
   console.log('*** we landed on the moon! ***');
 });
 
-router.get('/seasons', function (req, res, next) {
-  seasonModel.find();
+router.get('/seasons', async (req, res, next) => {
+  await model.find({});
 
-  console.log('oh yeah!')
+  const seasons = serializer.serialize(model);
 
-  res.send('Oh, how nice.');
+  res.send(seasons);
 });
 
 module.exports = router;
-
-
-/*
-var UserSerializer = new JSONAPISerializer('users', {
-  attributes: ['firstName', 'lastName']
-});
-
-var users = UserSerializer.serialize(data);
-*/

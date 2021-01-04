@@ -5,11 +5,28 @@ const createError = require('http-errors');
 const express = require('express');
 const logger = require('morgan');
 const path = require('path');
-const seasonsRoute = require('./app/routes/seasons');
+const mongoose = require('mongoose');
+
+// IMPORT ROUTES
+
+const seasons = require('./app/routes/seasons');
+const contestants = require('./app/routes/contestants');
+
+// DB & MONGOOSE
+
+mongoose.connect(config.database.connectionString, { useNewUrlParser: true });
+
+const db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function () {
+  console.log('*** we landed on the moon! ***');
+});
 
 const app = express();
 
 // APP SETUP
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -17,8 +34,17 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors({ origin: 'http://localhost:7000' }));
 
-// END POINTS
-app.use(seasonsRoute);
+// ROUTES
+
+//app.get('/', seasons.list);
+//app.get('/seasons/:number', seasons.view);
+
+
+app.use(seasons);
+app.use(contestants);
+
+
+
 
 // API ERROR HANDLING
 app.use(function (req, res, next) {

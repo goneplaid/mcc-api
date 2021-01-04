@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const JSONAPISerializer = require('jsonapi-serializer').Serializer;
 
-const seasonSchema = new Schema({
+// SCHEMA
+
+const schema = new Schema({
   //id: String,
   number: String,
   judge_ids: Array,
@@ -9,6 +12,20 @@ const seasonSchema = new Schema({
   episode_ids: Array
 });
 
-const Season = mongoose.model('Season', seasonSchema);
+// MODEL
 
-module.exports = Season;
+const model = mongoose.model('Season', schema);
+
+// SERIALIZER
+
+const serializer = new JSONAPISerializer('seasons', {
+  attributes: ['number']
+});
+
+// EXPORTS
+
+module.exports = {
+  schema,
+  model,
+  serializer
+};
