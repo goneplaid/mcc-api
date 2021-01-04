@@ -6,9 +6,8 @@
     "start": "node ./bin/www",
     "watch": "nodemon ./bin/www",
     "debug": "nodemon --inspect ./bin/www",
-    "seed": "zsh ./bin/data",
-    "process-seasons": "node lib/processors/index.js",
-    "debug-seasons": "node inspect lib/processors/index.js"
+    "process-seasons": "node data/processors/index.js",
+    "debug-seasons": "node inspect data/processors/index.js",
   },
   "dependencies": {
     "config": "lorenwest/node-config",
