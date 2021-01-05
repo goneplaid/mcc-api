@@ -10,7 +10,6 @@ const mongoose = require('mongoose');
 // IMPORT ROUTES
 
 const seasons = require('./app/routes/seasons');
-const contestants = require('./app/routes/contestants');
 
 // DB & MONGOOSE
 
@@ -32,6 +31,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// TODO: set up some reusable URI helpers
 app.use(cors({ origin: 'http://localhost:7000' }));
 
 // ROUTES
@@ -41,7 +42,6 @@ app.use(cors({ origin: 'http://localhost:7000' }));
 
 
 app.use(seasons);
-app.use(contestants);
 
 
 
