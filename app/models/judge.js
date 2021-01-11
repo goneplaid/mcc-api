@@ -1,12 +1,27 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const judgeSchema = new Schema({
-  name: String,
-  avatar: String,
-  season_ids: Array,
+// SCHEMA
+const schema = new Schema({
+  name: {
+    type: Schema.Types.String,
+    required: true
+  },
+  avatar: {
+    type: Schema.Types.String,
+    required: true
+  },
+  seasons: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Season'
+  }],
 });
 
-const Judge = mongoose.model('Judge', judgeSchema);
+// MODEL
+const model = mongoose.model('Judge', schema);
 
-module.exports = Judge;
+// EXPORTS
+module.exports = {
+  schema,
+  model,
+};

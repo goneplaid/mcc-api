@@ -40,30 +40,72 @@ db.once('open', function () {
   /* no-op */
 });
 
+// Some utilities from node-js
+const path = require('path');
+const fs = require('fs');
+
+// The generic "reader" class, used to examine data from the csv files
+const Reader = require('./util/reader');
+const { nextTick } = require('process');
+
 async function seedSeasons() {
   const SEASON_COUNT = 10;
 
-  // Clear out the season collection
   purgeCollection('seasons');
 
-  // Our season serializer
   const SeasonSerializer = require('./serializers/season');
-
-  // Season model related classes
-  const seasonModel = require('../../app/models/season').model;
+  const SeasonModel = require('../../app/models/season').model;
   const seasonNumbers = Array.from({ length: SEASON_COUNT }, (_, i) => i + 1);
 
-  for (let season of seasonNumbers) {
-    const seasonRecord = new SeasonSerializer(season.toString());
+  return await Promise.all(seasonNumbers.map(async season => {
+    const seasonData = new SeasonSerializer(season.toString()).serialize();
 
     try {
-      const seasonDocument = await seasonModel.create(seasonRecord);
+      const seasonDocument = await SeasonModel.create(seasonData);
 
-      console.log(`season ${seasonDocument} saved!`);
+      console.log(`season ${season} saved!`);
+
+      return seasonDocument;
+    } catch (error) {
+      console.log(error);
+    }
+  }));
+}
+
+async function seedJudges(seasonDocuments) {
+  purgeCollection('judges');
+
+  const JudgeSerializer = require('./serializers/judge');
+
+  // Setup our reader class for judges
+  const judgeReader = new Reader({
+    csvDirectory: path.join(__dirname, '../csv/judges.csv'),
+    serializer: JudgeSerializer,
+  });
+
+  const JudgeModel = require('../../app/models/judge').model;
+
+  for (let judge of judgeReader.records) {
+    const judgeData = judge.serialize();
+    const seasons = seasonDocuments.filter(season => judgeData.seasonNumbers.includes(season.number));
+    const judgeDocument = new JudgeModel(judgeData);
+
+    judgeDocument.seasons.push(...seasons);
+
+    try {
+      await judgeDocument.save();
+
+      console.log(`judge ${judgeDocument.name} saved!`);
     } catch (error) {
       console.log(error);
     }
   }
+}
+
+async function seedDatabase() {
+  const seasonDocuments = await seedSeasons();
+
+  seedJudges(seasonDocuments);
 }
 
 function purgeCollection(name) {
@@ -73,4 +115,4 @@ function purgeCollection(name) {
   });
 }
 
-seedSeasons();
+seedDatabase();

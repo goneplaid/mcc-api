@@ -41,7 +41,6 @@ const serializer = new JSONAPISerializer('seasons', {
 });
 
 // EXPORTS
-
 module.exports = {
   schema,
   model,

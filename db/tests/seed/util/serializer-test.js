@@ -7,14 +7,6 @@ const Serializer = require('../../../seed/util/serializer');
 const { AssertionError } = assert;
 
 describe('Serializer class', function () {
-  const dataData = [
-    'Brent Spiner',
-    'Encounter at Fairpoint',
-    'male',
-    'Spot',
-    'feline'
-  ];
-
   class AndroidSerializer extends Serializer {
     constructor(data) {
       super(data, [
@@ -34,6 +26,14 @@ describe('Serializer class', function () {
       };
     }
   }
+
+  const dataData = [
+    'Brent Spiner',
+    'Encounter at Fairpoint',
+    'male',
+    'Spot',
+    'feline'
+  ];
 
   describe('constructor', function () {
     it('defines and sets properties on instantiation', function (done) {

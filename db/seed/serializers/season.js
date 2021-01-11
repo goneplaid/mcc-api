@@ -1,12 +1,9 @@
-const mongoose = require('mongoose');
 const Serializer = require('../util/serializer');
-const ObjectId = mongoose.Types.ObjectId;
 
 class SeasonSerializer extends Serializer {
   constructor(number) {
-    super([number], { number: 0 });
+    super([number], ['number']);
 
-    // this.id = new ObjectId;
     this.judgeIds = [];
     this.contestantIds = [];
     this.episodeIds = [];
