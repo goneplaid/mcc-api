@@ -14,6 +14,7 @@
     "test-db-util-debug": "mocha db/tests/seed/util --inspect-brk"
   },
   "dependencies": {
+    "bl": "2.2.1",
     "config": "lorenwest/node-config",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
