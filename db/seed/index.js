@@ -46,7 +46,7 @@ const ParticipantModel = require('../../app/models/participant').model;
 const challengeTypes = require('./challenge-type-code-mappings');
 
 // Fist, connect to our data store
-require('../../app/middleware/connect-db')();
+require('../../app/lib/connect-db')();
 
 async function createSeasons(maxSeason) {
   console.log('...creating seasons\n');

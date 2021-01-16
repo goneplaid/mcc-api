@@ -3,7 +3,7 @@ const router = express.Router();
 const model = require('../models/season');
 const serializer = require('../serializers/season');
 
-require('../middleware/connect-db')();
+require('../lib/connect-db')();
 
 router.get('/seasons', async (req, res, next) => {
   const cursor = model.find({}).cursor();

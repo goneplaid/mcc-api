@@ -6,7 +6,7 @@ const logger = require('morgan');
 const path = require('path');
 
 // Connect to the database
-require('./app/middleware/connect-db')();
+require('./app/lib/connect-db')();
 
 const seasons = require('./app/routes/seasons');
 
