@@ -6,9 +6,12 @@
     "start": "node ./bin/www",
     "watch": "nodemon ./bin/www",
     "debug": "nodemon --inspect ./bin/www",
-    "seed": "zsh ./bin/data",
-    "process-seasons": "node lib/processors/index.js",
-    "debug-seasons": "node inspect lib/processors/index.js"
+    "seed": "node db/seed/index.js",
+    "seed-debug": "node inspect db/seed/index.js",
+    "test-db": "mocha db/tests",
+    "test-db-debug": "mocha db/tests --inspect-brk",
+    "test-db-util": "mocha db/tests/seed/util",
+    "test-db-util-debug": "mocha db/tests/seed/util --inspect-brk"
   },
   "dependencies": {
     "config": "lorenwest/node-config",
@@ -25,6 +28,7 @@
     "uuid": "3.0.1"
   },
   "devDependencies": {
+    "mocha": "^8.2.1",
     "nodemon": "^2.0.2"
   }
 }

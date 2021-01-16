@@ -7,10 +7,6 @@ yarn-error.log
 # editor
 .history
 
-# config & data
-bin/data
-lib/fixtures
-
 # misc
 **/.DS_Store
 

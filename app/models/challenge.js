@@ -1,13 +1,27 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const challengeSchema = new Schema({
-  //id: String,
-  type: String,
-  episode_id: String,
-  participant_ids: Array,
+// SCHEMA
+const schema = new Schema({
+  type: {
+    type: Schema.Types.String,
+    required: true
+  },
+  episode: {
+    type: Schema.Types.ObjectId,
+    ref: 'Episode'
+  },
+  participants: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Participant'
+  }],
 })
 
-const Challenge = mongoose.model('Challenge', challengeSchema);
+// MODEL
+const model = mongoose.model('Challenge', schema);
 
-module.exports = Challenge;
+// EXPORTS
+module.exports = {
+  schema,
+  model,
+};

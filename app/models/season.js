@@ -3,27 +3,44 @@ const Schema = mongoose.Schema;
 const JSONAPISerializer = require('jsonapi-serializer').Serializer;
 
 // SCHEMA
-
 const schema = new Schema({
-  //id: String,
-  number: String,
-  judge_ids: Array,
-  contestant_ids: Array,
-  episode_ids: Array
+  number: {
+    type: Schema.Types.String,
+    required: true
+  },
+  judges: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Judge'
+  }],
+  contestants: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Contestant'
+  }],
+  episodes: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Episode'
+  }]
 });
 
-// MODEL
+// schema.set('toObject', { virtuals: true })
+// schema.set('toJSON', { virtuals: true })
 
+// MODEL
 const model = mongoose.model('Season', schema);
 
 // SERIALIZER
-
 const serializer = new JSONAPISerializer('seasons', {
-  attributes: ['number']
+  topLevelLinks: {
+    // TODO: set up some reusable URI helpers
+    self: 'http://localhost:7000/seasons'
+  },
+  attributes: [
+    '_id',
+    'number',
+  ]
 });
 
 // EXPORTS
-
 module.exports = {
   schema,
   model,

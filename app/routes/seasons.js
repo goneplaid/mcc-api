@@ -13,13 +13,18 @@ const db = mongoose.connection;
 
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
-  console.log('*** we landed on the moon! ***');
+  /* no-op */
 });
 
 router.get('/seasons', async (req, res, next) => {
-  await model.find({});
+  const cursor = model.find({}).lean().cursor();
+  const toSerialize = [];
 
-  const seasons = serializer.serialize(model);
+  for (let document = await cursor.next(); document != null; document = await cursor.next()) {
+    toSerialize.push(document);
+  }
+
+  const seasons = serializer.serialize(toSerialize);
 
   res.send(seasons);
 });

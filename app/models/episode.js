@@ -1,15 +1,39 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const episodeSchema = new Schema({
-  //id: String,
-  number: String,
-  name: String,
-  air_date: String,
-  season_id: Number,
-  challenge_ids: Array,
+// SCHEMA
+const schema = new Schema({
+  number: {
+    type: Schema.Types.String,
+    required: true
+  },
+  name: {
+    type: Schema.Types.String,
+    required: true
+  },
+  airDate: {
+    type: Schema.Types.String,
+    required: true
+  },
+  season: {
+    type: Schema.Types.ObjectId,
+    ref: 'Season'
+  },
+  judges: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Judge'
+  }],
+  challenges: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Challenge'
+  }],
 })
 
-const Episode = mongoose.model('Episode', episodeSchema);
+// MODEL
+const model = mongoose.model('Episode', schema);
 
-module.exports = Episode
+// EXPORTS
+module.exports = {
+  schema,
+  model,
+};
