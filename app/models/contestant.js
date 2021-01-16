@@ -5,14 +5,34 @@ const JSONAPISerializer = require('jsonapi-serializer').Serializer;
 // SCHEMA
 
 const schema = new Schema({
-  //id: String,
-  name: String,
-  age: Number,
-  hometown: String,
-  occupation: String,
-  avatar: String,
-  season_id: String,
-  participant_ids: Array,
+  name: {
+    type: Schema.Types.String,
+    required: true
+  },
+  age: {
+    type: Schema.Types.Number,
+    required: true
+  },
+  hometown: {
+    type: Schema.Types.String,
+    required: true
+  },
+  occupation: {
+    type: Schema.Types.String,
+    required: true
+  },
+  avatar: {
+    type: Schema.Types.String,
+    required: true
+  },
+  season: {
+    type: Schema.Types.ObjectId,
+    ref: 'Season'
+  },
+  participants: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Season'
+  }],
 })
 
 // MODEL

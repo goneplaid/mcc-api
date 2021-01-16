@@ -3,8 +3,10 @@
 
   Overview:
 
-    This node script takes data that was manually scrapped from Wikipedia and transformed into CSV
-    files and uses it to seed a mongoose database.
+    This NodeJS script takes data that was manually scrapped from Wikipedia, transformed into CSV
+    files, and then uses it to seed a mongoose database.
+    
+    All models are created locally and related and then finally saved to the database.
 
   Explanation of data used:
 
@@ -24,95 +26,217 @@
     for the judges.
 */
 
-// First, establish our connection to the database
 const mongoose = require('mongoose');
 const config = require('config');
-
-mongoose.connect(config.database.connectionString, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
-const db = mongoose.connection;
-
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function () {
-  /* no-op */
-});
-
-// Some utilities from node-js
 const path = require('path');
-const fs = require('fs');
 
-// The generic "reader" class, used to examine data from the csv files
+const SeasonSerializer = require('./serializers/season');
+const ContestantSerializer = require('./serializers/contestant');
+const EpisodeSerializer = require('./serializers/episode');
+
 const Reader = require('./util/reader');
-const { nextTick } = require('process');
+const challengeReader = require('./custom-readers/challenge');
+const participantReader = require('./custom-readers/participant');
 
-async function seedSeasons() {
-  const SEASON_COUNT = 10;
+const SeasonModel = require('../../app/models/season').model;
+const ContestantModel = require('../../app/models/contestant').model;
+const EpisodeModel = require('../../app/models/episode').model;
+const ChallengeModel = require('../../app/models/challenge').model;
+const ParticipantModel = require('../../app/models/participant').model;
 
-  purgeCollection('seasons');
+const challengeTypes = require('./challenge-type-code-mappings');
 
-  const SeasonSerializer = require('./serializers/season');
-  const SeasonModel = require('../../app/models/season').model;
-  const seasonNumbers = Array.from({ length: SEASON_COUNT }, (_, i) => i + 1);
+async function createSeasons(maxSeason) {
+  console.log('...creating seasons\n');
 
-  return await Promise.all(seasonNumbers.map(async season => {
+  const seasons = Array.from({ length: maxSeason }, (_, i) => i + 1);
+
+  for (let season of seasons) {
+    console.log(`processing season ${season}`);
+    console.log('--------------------------');
+
     const seasonData = new SeasonSerializer(season.toString()).serialize();
+    const seasonDocument = new SeasonModel(seasonData);
 
-    try {
-      const seasonDocument = await SeasonModel.create(seasonData);
+    const contestantDocuments = await createContestants(seasonDocument);
+    const episodeDocuments = await createEpisodes(seasonDocument, contestantDocuments);
 
-      console.log(`season ${season} saved!`);
+    seasonDocument.contestants = contestantDocuments;
+    seasonDocument.episodes = episodeDocuments;
 
-      return seasonDocument;
-    } catch (error) {
-      console.log(error);
-    }
-  }));
+    await seasonDocument.save();
+
+    console.log('--------------------------');
+    console.log(`Season ${seasonDocument.number} document created and saved!`);
+    console.log('==========================\n');
+  };
 }
 
-async function seedJudges(seasonDocuments) {
-  purgeCollection('judges');
-
-  const JudgeSerializer = require('./serializers/judge');
-
-  // Setup our reader class for judges
-  const judgeReader = new Reader({
-    csvDirectory: path.join(__dirname, '../csv/judges.csv'),
-    serializer: JudgeSerializer,
+async function createContestants(seasonDocument) {
+  const contestantsReader = new Reader({
+    season: seasonDocument.number,
+    csvDirectory: path.join(__dirname, `../csv/contestants/season-${seasonDocument.number}.csv`),
+    serializer: ContestantSerializer,
   });
 
-  const JudgeModel = require('../../app/models/judge').model;
+  const contestantDocuments = await Promise.all(contestantsReader.records.map(async contestantData => {
+    const contestantDocument = new ContestantModel(contestantData);
+    contestantDocument.season = seasonDocument;
 
-  for (let judge of judgeReader.records) {
-    const judgeData = judge.serialize();
-    const seasons = seasonDocuments.filter(season => judgeData.seasonNumbers.includes(season.number));
-    const judgeDocument = new JudgeModel(judgeData);
+    await contestantDocument.save();
 
-    judgeDocument.seasons.push(...seasons);
+    return contestantDocument;
+  }));
 
-    try {
-      await judgeDocument.save();
+  console.log(`${contestantDocuments.length} contestant documents created and saved...`);
 
-      console.log(`judge ${judgeDocument.name} saved!`);
-    } catch (error) {
-      console.log(error);
+  return contestantDocuments;
+}
+
+async function createEpisodes(seasonDocument, contestantDocuments) {
+  const season = seasonDocument.number;
+  const episodesReader = new Reader({
+    season,
+    csvDirectory: path.join(__dirname, `../csv/episodes/season-${season}.csv`),
+    serializer: EpisodeSerializer,
+  });
+
+  const challengesReader = createCustomChallengeReader(season);
+  const participantsReader = createCustomParticipantReader(season);
+
+  const episodeDocuments = await Promise.all(episodesReader.records.map(async episodeData => {
+    const episodeDocument = new EpisodeModel(episodeData);
+    episodeDocument.season = seasonDocument;
+
+    const episodeNumber = episodeDocument.number;
+
+    const challengeDocuments = await createChallenges(
+      challengesReader.records.filter(challenge => challenge.episode === episodeNumber),
+      participantsReader.records.filter(participant => participant.episode === episodeNumber),
+      episodeDocument,
+      contestantDocuments
+    );
+
+    episodeDocument.challenges = challengeDocuments;
+
+    await episodeDocument.save();
+
+    return episodeDocument;
+  }));
+
+  console.log(`${episodeDocuments.length} episode documents created and saved...`);
+
+  return episodeDocuments;
+}
+
+async function createChallenges(challenges, participants, episodeDocument, contestantDocuments) {
+  const challengeDocuments = await Promise.all(challenges.map(async challengeData => {
+    const challengeDocument = new ChallengeModel(challengeData);
+    challengeDocument.episode = episodeDocument;
+
+    const participantDocuments = await createParticipants(participants, challengeDocument, contestantDocuments);
+    challengeDocument.participants = participantDocuments;
+
+    await challengeDocument.save();
+
+    return challengeDocument;
+  }));
+
+  console.log(`${challengeDocuments.length} challenge documents created and saved...`);
+
+  return challengeDocuments;
+}
+
+async function createParticipants(participants, challengeDocument, contestantDocuments) {
+  const participantDocuments = await Promise.all(participants.map(async participantData => {
+    const participantDocument = new ParticipantModel(participantData);
+    const contestants = contestantDocuments.filter(contestant => {
+      return participantData.contestants.includes(contestant.name);
+    });
+
+    participantDocument.contestants = contestants;
+    participantDocument.challenge = challengeDocument;
+
+    await participantDocument.save();
+
+    return participantDocument;
+  }));
+
+  console.log(`${participantDocuments.length} participant documents created and saved...`);
+
+  return participantDocuments;
+}
+
+const challengesCsvPath = (season) => `../csv/challenges/season-${season}.csv`;
+
+function createCustomChallengeReader(season) {
+  return new Reader({
+    csvDirectory: path.join(__dirname, challengesCsvPath(season)),
+    parserOptions: {
+      ltrim: true,
+      relax_column_count: true,
+    },
+    dataReader: challengeReader,
+    dataReaderParams: {
+      challengeTypes
+    },
+  });
+}
+
+function createCustomParticipantReader(season) {
+  return new Reader({
+    csvDirectory: path.join(__dirname, challengesCsvPath(season)),
+    parserOptions: {
+      ltrim: true,
+      relax_column_count: true,
+    },
+    dataReader: participantReader,
+    dataReaderParams: {
+      challengeTypes
     }
-  }
+  });
+}
+
+async function purgeCollection(name) {
+  return mongoose.connection.dropCollection(name).catch(e => {
+    if (e.message !== 'ns not found') {
+      console.log(e.message);
+    }
+  });
+}
+
+async function connectDb() {
+  console.log('connecting to database...');
+
+  await mongoose.connect(config.database.connectionString, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+
+  console.log('connected to database!');
+  console.log('--------------------------');
+
+  mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
 }
 
 async function seedDatabase() {
-  const seasonDocuments = await seedSeasons();
+  // connect
+  await connectDb();
 
-  seedJudges(seasonDocuments);
-}
+  // purge all the things
+  await purgeCollection('seasons');
+  await purgeCollection('contestants');
+  await purgeCollection('episodes');
+  await purgeCollection('judges');
+  await purgeCollection('challenges');
+  await purgeCollection('participants');
 
-function purgeCollection(name) {
-  mongoose.connection.dropCollection(name, function (error, result) {
-    if (!result) console.log(`collection "${name}" successfully dropped.`);
-    if (error && !error.message.includes('ns not found')) console.info(error);
-  });
+  console.log('\nAll previous collections have been purged\n');
+
+  // Get going
+  const maxSeason = 1;
+
+  await createSeasons(maxSeason);
 }
 
 seedDatabase();

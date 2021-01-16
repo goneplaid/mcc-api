@@ -18,7 +18,7 @@ class Reader {
     if (!(Serializer || customReader)) throw new Error('You must pass a Serializer or a custom dataReader!');
 
     if (customReader) {
-      this.records = customReader(data, options.season, options.dataReaderParams);
+      this.records = customReader(data, options.dataReaderParams);
     } else {
       for (const row of data) {
         this.records.push(new Serializer(row, options.season));

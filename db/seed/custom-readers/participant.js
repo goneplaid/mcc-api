@@ -1,9 +1,3 @@
-const mongoose = require('mongoose');
-const zip = require('lodash.zip');
-const ParticipantSerializer = require('../serializers/participant');
-
-const ObjectId = mongoose.Types.ObjectId;
-
 /*
   Function: participantReader()
 
@@ -59,8 +53,10 @@ const ObjectId = mongoose.Types.ObjectId;
     The rows represent each individual contestant, how they did in each challenge individually or
     if they were part of a losing or winning team.
 */
+const zip = require('lodash.zip');
+const ParticipantSerializer = require('../serializers/participant');
 
-function participantReader(data, season, { challengeTypes }) {
+function participantReader(data, { challengeTypes }) {
   // The first thing we need to do is rotate the matrix of data. Since each row represents a
   // timeline of each individual contestant and how they performed across all episodes, it's hard
   // to work with as each contestant is isolated from other contestants in the same challenges.
@@ -114,7 +110,6 @@ function participantReader(data, season, { challengeTypes }) {
       }
 
       participants.push(new ParticipantSerializer([
-        new ObjectId,
         episodeNumber,
         challengeType,
         participantType,
@@ -123,7 +118,6 @@ function participantReader(data, season, { challengeTypes }) {
       ]));
 
       participants.push(new ParticipantSerializer([
-        new ObjectId,
         episodeNumber,
         challengeType,
         participantType,
@@ -138,11 +132,10 @@ function participantReader(data, season, { challengeTypes }) {
         const result = parseContestantResult(contestantInfo);
 
         participants.push(new ParticipantSerializer([
-          new ObjectId,
           episodeNumber,
           challengeType,
           participantType,
-          contestantNames[index],
+          [contestantNames[index]],
           result,
         ]));
       }
