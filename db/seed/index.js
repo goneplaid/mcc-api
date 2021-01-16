@@ -3,8 +3,8 @@
 
   Overview:
 
-    This NodeJS script takes data that was manually scrapped from Wikipedia, transformed into CSV
-    files, and then uses it to seed a mongoose database.
+    This NodeJS script takes data that was manually scrapped from Wikipedia and transformed into CSV
+    files and uses it to seed a mongoose database.
     
     All models are created locally and related and then finally saved to the database.
 
@@ -32,16 +32,18 @@ const path = require('path');
 const SeasonSerializer = require('./serializers/season');
 const ContestantSerializer = require('./serializers/contestant');
 const EpisodeSerializer = require('./serializers/episode');
+const JudgeSerializer = require('./serializers/judge');
 
 const Reader = require('./util/reader');
 const challengeReader = require('./custom-readers/challenge');
 const participantReader = require('./custom-readers/participant');
 
 const SeasonModel = require('../../app/models/season');
-const ContestantModel = require('../../app/models/contestant').model;
-const EpisodeModel = require('../../app/models/episode').model;
-const ChallengeModel = require('../../app/models/challenge').model;
-const ParticipantModel = require('../../app/models/participant').model;
+const ContestantModel = require('../../app/models/contestant');
+const JudgeModel = require('../../app/models/judge');
+const EpisodeModel = require('../../app/models/episode');
+const ChallengeModel = require('../../app/models/challenge');
+const ParticipantModel = require('../../app/models/participant');
 
 const challengeTypes = require('./challenge-type-code-mappings');
 
@@ -52,6 +54,7 @@ async function createSeasons(maxSeason) {
   console.log('...creating seasons\n');
 
   const seasons = Array.from({ length: maxSeason }, (_, i) => i + 1);
+  const judgeDocuments = createJudges();
 
   for (let season of seasons) {
     console.log(`processing season ${season}`);
@@ -62,9 +65,13 @@ async function createSeasons(maxSeason) {
 
     const contestantDocuments = await createContestants(seasonDocument);
     const episodeDocuments = await createEpisodes(seasonDocument, contestantDocuments);
+    const seasonJudges = judgeDocuments.filter(document => document.seasonNumbers.includes(season.toString()));
+
+    for (const judge of seasonJudges) judge.seasons.push(seasonDocument);
 
     seasonDocument.contestants = contestantDocuments;
     seasonDocument.episodes = episodeDocuments;
+    seasonDocument.judges = seasonJudges;
 
     await seasonDocument.save();
 
@@ -72,6 +79,27 @@ async function createSeasons(maxSeason) {
     console.log(`Season ${seasonDocument.number} document created and saved!`);
     console.log('==========================\n');
   };
+
+  for (const judge of judgeDocuments) {
+    // Since it's possible that we're not working through every season, 
+    // only save the judges that appeared in at least one season processed
+    if (judge.seasons.length > 1) await judge.save();
+  }
+};
+
+function createJudges() {
+  const judgeReader = new Reader({
+    csvDirectory: path.join(__dirname, '../csv/judges.csv'),
+    serializer: JudgeSerializer,
+  });
+
+  return judgeReader.records.map(judgeData => {
+    const judgeDocument = new JudgeModel(judgeData);
+
+    judgeDocument.seasonNumbers = judgeData.seasonNumbers.split(',');
+
+    return judgeDocument;
+  });
 }
 
 async function createContestants(seasonDocument) {

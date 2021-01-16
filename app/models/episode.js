@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// SCHEMA
 const schema = new Schema({
   number: {
     type: Schema.Types.String,
@@ -19,21 +18,10 @@ const schema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Season'
   },
-  judges: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Judge'
-  }],
   challenges: [{
     type: Schema.Types.ObjectId,
     ref: 'Challenge'
   }],
 })
 
-// MODEL
-const model = mongoose.model('Episode', schema);
-
-// EXPORTS
-module.exports = {
-  schema,
-  model,
-};
+module.exports = mongoose.model('Episode', schema);

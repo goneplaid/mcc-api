@@ -17,11 +17,4 @@ const schema = new Schema({
   }],
 });
 
-// MODEL
-const model = mongoose.model('Judge', schema);
-
-// EXPORTS
-module.exports = {
-  schema,
-  model,
-};
+module.exports = mongoose.model('Judge', schema);

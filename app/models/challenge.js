@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// SCHEMA
 const schema = new Schema({
   type: {
     type: Schema.Types.String,
@@ -17,11 +16,4 @@ const schema = new Schema({
   }],
 })
 
-// MODEL
-const model = mongoose.model('Challenge', schema);
-
-// EXPORTS
-module.exports = {
-  schema,
-  model,
-};
+module.exports = mongoose.model('Challenge', schema);

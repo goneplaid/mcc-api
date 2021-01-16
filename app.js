@@ -28,10 +28,7 @@ app.use(cors({ origin: 'http://localhost:7000' }));
 //app.get('/', seasons.list);
 //app.get('/seasons/:number', seasons.view);
 
-
 app.use(seasons);
-
-
 
 
 // API ERROR HANDLING

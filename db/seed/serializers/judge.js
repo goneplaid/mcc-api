@@ -5,21 +5,19 @@ class JudgeSerializer extends Serializer {
   constructor(data) {
     super(data, [
       'name',
-      'seasons'
+      'seasonNumbers'
     ]);
 
     const camelizedName = this.name.toLowerCase().replace("'", '').replace(' ', '_');
     const avatar = `${AVATAR_PATH}/${camelizedName}.png`;
 
     this.avatar = avatar;
-    this.seasonNumbers = this.seasons.split(',');
   }
 
   serialize() {
     return {
       name: this.name,
       avatar: this.avatar,
-      seasonNumbers: this.seasonNumbers,
     };
   }
 }
