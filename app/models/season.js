@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const JSONAPISerializer = require('jsonapi-serializer').Serializer;
 
-// SCHEMA
 const schema = new Schema({
   number: {
     type: Schema.Types.String,
@@ -22,27 +20,4 @@ const schema = new Schema({
   }]
 });
 
-// schema.set('toObject', { virtuals: true })
-// schema.set('toJSON', { virtuals: true })
-
-// MODEL
-const model = mongoose.model('Season', schema);
-
-// SERIALIZER
-const serializer = new JSONAPISerializer('seasons', {
-  topLevelLinks: {
-    // TODO: set up some reusable URI helpers
-    self: 'http://localhost:7000/seasons'
-  },
-  attributes: [
-    '_id',
-    'number',
-  ]
-});
-
-// EXPORTS
-module.exports = {
-  schema,
-  model,
-  serializer
-};
+module.exports = mongoose.model('Season', schema);

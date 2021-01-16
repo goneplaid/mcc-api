@@ -37,7 +37,7 @@ const Reader = require('./util/reader');
 const challengeReader = require('./custom-readers/challenge');
 const participantReader = require('./custom-readers/participant');
 
-const SeasonModel = require('../../app/models/season').model;
+const SeasonModel = require('../../app/models/season');
 const ContestantModel = require('../../app/models/contestant').model;
 const EpisodeModel = require('../../app/models/episode').model;
 const ChallengeModel = require('../../app/models/challenge').model;
@@ -219,7 +219,7 @@ async function seedDatabase() {
   console.log('\nAll previous collections have been purged\n');
 
   // Get going
-  const maxSeason = 1;
+  const maxSeason = 2;
 
   await createSeasons(maxSeason);
 }

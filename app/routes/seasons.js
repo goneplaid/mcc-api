@@ -1,12 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const {
-  model,
-  serializer
-} = require('../models/season');
-const connectDb = require('../middleware/connect-db');
+const model = require('../models/season');
+const serializer = require('../serializers/season');
 
-connectDb();
+require('../middleware/connect-db')();
 
 router.get('/seasons', async (req, res, next) => {
   const cursor = model.find({}).cursor();
@@ -15,8 +12,6 @@ router.get('/seasons', async (req, res, next) => {
   for (let document = await cursor.next(); document != null; document = await cursor.next()) {
     toSerialize.push(document);
   }
-
-  debugger;
 
   const seasons = serializer.serialize(toSerialize);
 
