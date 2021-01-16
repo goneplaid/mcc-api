@@ -1,26 +1,14 @@
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
-const config = require('config');
 const createError = require('http-errors');
 const express = require('express');
 const logger = require('morgan');
 const path = require('path');
-const mongoose = require('mongoose');
 
-// IMPORT ROUTES
+// Connect to the database
+require('./app/middleware/connect-db')();
 
 const seasons = require('./app/routes/seasons');
-
-// DB & MONGOOSE
-
-mongoose.connect(config.database.connectionString, { useNewUrlParser: true });
-
-const db = mongoose.connection;
-
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function () {
-  console.log('*** we landed on the moon! ***');
-});
 
 const app = express();
 

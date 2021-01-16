@@ -27,7 +27,6 @@
 */
 
 const mongoose = require('mongoose');
-const config = require('config');
 const path = require('path');
 
 const SeasonSerializer = require('./serializers/season');
@@ -45,6 +44,9 @@ const ChallengeModel = require('../../app/models/challenge').model;
 const ParticipantModel = require('../../app/models/participant').model;
 
 const challengeTypes = require('./challenge-type-code-mappings');
+
+// Fist, connect to our data store
+require('../../app/middleware/connect-db')();
 
 async function createSeasons(maxSeason) {
   console.log('...creating seasons\n');
@@ -205,24 +207,7 @@ async function purgeCollection(name) {
   });
 }
 
-async function connectDb() {
-  console.log('connecting to database...');
-
-  await mongoose.connect(config.database.connectionString, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-
-  console.log('connected to database!');
-  console.log('--------------------------');
-
-  mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
-}
-
 async function seedDatabase() {
-  // connect
-  await connectDb();
-
   // purge all the things
   await purgeCollection('seasons');
   await purgeCollection('contestants');
