@@ -12,7 +12,7 @@
 
 An API providing data about the show Masterchef (US). Challenge result data was scraped from [Wikipedia](https://en.wikipedia.org/wiki/MasterChef_(American_season_1)#Elimination_table) and has been transformed into a set of API end-points.
 
-This API was built to serve a front-end, MCC-UI. This is side project of mine that aggregates episode challenge data with recipe data so that it's navigable and queryable.
+This API was built to serve a front-end, MCC-UI. This is a side project of mine that aggregates episode challenge data with recipe data so that it's navigable and queryable.
 
 The idea is that this data can be mined to answer questions like what cooking technique for salmon has fared the best in all challenges where salmon was presented as a dish. Or what percentage of Italian dishes has Joe Bastianich shit on when judging? How many have truly amazed him and what were they? What is Gordon Ramsay's consistently favored dish across all seasons of MC? Is there one?
 
@@ -47,7 +47,7 @@ Finally, run it:
 yarn start
 ```
 
-Most of these node scripts have `*-debug` analogs for debugging things in case something goes awry 
+Most of these node scripts have `*-debug` analogs for debugging things in case something goes awry.
 
 # But Why?
 
