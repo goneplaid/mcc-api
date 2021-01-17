@@ -18,7 +18,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use('/assets', express.static(path.join(__dirname, '/public/assets')));
 
 // TODO: set up some reusable URI helpers
 app.use(cors({ origin: 'http://localhost:7000' }));

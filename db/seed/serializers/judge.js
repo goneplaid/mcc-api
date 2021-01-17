@@ -1,5 +1,5 @@
 const Serializer = require('../util/serializer');
-const AVATAR_PATH = '/assets/images/avatars/judges';
+const AVATAR_PATH = '/assets/images/judges';
 
 class JudgeSerializer extends Serializer {
   constructor(data) {

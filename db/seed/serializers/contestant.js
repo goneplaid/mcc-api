@@ -1,5 +1,5 @@
 const Serializer = require('../util/serializer');
-const AVATAR_PATH = '/assets/images/avatars/contestants/';
+const AVATAR_PATH = '/assets/images/contestants/';
 
 class ContestantSerializer extends Serializer {
   constructor(data, season) {
