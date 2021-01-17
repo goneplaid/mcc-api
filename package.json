@@ -8,8 +8,8 @@
     "watch": "nodemon ./bin/www",
     "seed": "node db/seed/index.js",
     "seed-debug": "node inspect db/seed/index.js",
-    "test-db": "mocha test/db/**/*",
-    "test-db-debug": "mocha test/db/**/* --inspect-brk"
+    "test": "mocha test/**/* --recursive",
+    "test-debug": "mocha test/**/* --recursive --inspect-brk"
   },
   "dependencies": {
     "bl": "2.2.1",
