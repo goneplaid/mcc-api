@@ -34,7 +34,7 @@ challengeResults = [
 ]
 
 const selectedSeasonArg = process.argv.find(element => element.split('=')[0] === 'season');
-const seasons = selectedSeasonArg ? [Number(selectedSeasonArg.split('=')[1])] : [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const seasons = selectedSeasonArg ? [Number(selectedSeasonArg.split('=')[1])] : [1, 2];
 
 const toLines = (data) => data.toString().trim().split('\n');
 const toCsv = (data) => csvParseSync(file, parserOptions);
@@ -43,7 +43,7 @@ describe('Describe challenge data', function () {
   seasons.forEach((season) => {
     describe(`for season ${season}:`, function () {
       beforeEach(function () {
-        this.filePath = path.join(__dirname, `../csv/challenges/season-${season}.csv`);
+        this.filePath = path.join(__dirname, `../../../db/csv/challenges/season-${season}.csv`);
       });
 
       it('should contain data', function (done) {
@@ -56,7 +56,7 @@ describe('Describe challenge data', function () {
 
       it('should contain one entry (line) per contestant', function (done) {
         fs.readFile(this.filePath, function (error, challengeData) {
-          fs.readFile(path.join(__dirname, `../csv/contestants/season-${season}.csv`), function (error, contestantData) {
+          fs.readFile(path.join(__dirname, `../../../db/csv/contestants/season-${season}.csv`), function (error, contestantData) {
             const challengeLines = toLines(challengeData);
             const contestantLines = toLines(contestantData);
             const message = challengeLines.length > contestantLines.length + 1 ? 'Too many entries' : 'Too few entries';
@@ -117,7 +117,7 @@ describe('Describe challenge data', function () {
 
       it('should display a valid contestant name in the second column', function (done) {
         fs.readFile(this.filePath, function (error, challengeData) {
-          fs.readFile(path.join(__dirname, `../csv/contestants/season-${season}.csv`), function (error, contestantData) {
+          fs.readFile(path.join(__dirname, `../../../db/csv/contestants/season-${season}.csv`), function (error, contestantData) {
             toLines(challengeData).splice(1).forEach((line, index) => {
               assert.strictEqual(line.split(':')[1], toLines(contestantData)[index].split(':')[0], "contestant name wasn't found among contestants")
             });
