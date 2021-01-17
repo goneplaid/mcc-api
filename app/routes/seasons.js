@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const model = require('../models/season');
+const seasonModel = require('../models/season');
+const judgeModel = require('../models/judge');
 const serializer = require('../serializers/season');
 
 router.get('/seasons', async (req, res, next) => {
   const toSerialize = [];
 
-  for await (const document of model.find({})) {
+  for await (const document of seasonModel.find().populate('judges')) {
     toSerialize.push(document);
   }
 
@@ -18,7 +19,7 @@ router.get('/seasons', async (req, res, next) => {
 router.get('/seasons/{id}', async (req, res, next) => {
   const toSerialize = [];
 
-  for await (const document of model.find({})) {
+  for await (const document of seasonModel.find({})) {
     toSerialize.push(document);
   }
 
