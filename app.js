@@ -5,33 +5,29 @@ const express = require('express');
 const logger = require('morgan');
 const path = require('path');
 
-// Connect to the database
-require('./app/lib/connect-db')();
-
-const seasons = require('./app/routes/seasons');
+// APP SETUP
 
 const app = express();
-
-// APP SETUP
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use('/assets', express.static(path.join(__dirname, '/public/assets')));
-
-// TODO: set up some reusable URI helpers
 app.use(cors({ origin: 'http://localhost:7000' }));
+
+// DB
+
+require('./app/lib/connect-db')();
 
 // ROUTES
 
-//app.get('/', seasons.list);
-//app.get('/seasons/:number', seasons.view);
+const seasons = require('./app/routes/seasons');
 
 app.use(seasons);
 
+// ERROR HANDLING
 
-// API ERROR HANDLING
 app.use(function (req, res, next) {
   next(createError(404));
 });
