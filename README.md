@@ -1,12 +1,14 @@
 # MCC-API
 
 ![Screenie](README/home-screenshot.png)
-*Current index of the front-end*
+*Current index of a front-end consumer*
 
 * [Overview](#overview)
 * [Requirements](#requirements)
 * [Installation and Setup](#installation-and-setup)
 * [But Why?](#but-why)
+
+### Note: in very early development
 
 # Overview
 
