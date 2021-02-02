@@ -5,16 +5,17 @@ const judgeModel = require('../models/judge');
 const contestantModel = require('../models/contestant');
 const episodeModel = require('../models/episode');
 const JSONAPISerializer = require('jsonapi-serializer').Serializer;
+const { API_URL } = require('../../config/site.json');
 
 // GET seasons
 
 const seasonsSerializer = new JSONAPISerializer('seasons', {
   topLevelLinks: {
     // TODO: set up some reusable URI helpers
-    self: 'http://localhost:7000/seasons',
+    self: `${API_URL}/seasons`,
   },
   dataLinks: {
-    self: (season) => `http://localhost:7000/seasons/${season.number}`
+    self: (season) => `${API_URL}/seasons/${season.number}`
   },
   attributes: [
     'number',
@@ -42,7 +43,7 @@ router.get('/seasons', async (req, res, next) => {
 
 const seasonSerializer = new JSONAPISerializer('seasons', {
   topLevelLinks: {
-    self: (season) => `http://localhost:7000/seasons/${season.number}`
+    self: (season) => `${API_URL}/seasons/${season.number}`
   },
   attributes: [
     'number',

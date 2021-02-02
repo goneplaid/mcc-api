@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use('/assets', express.static(path.join(__dirname, '/public/assets')));
-app.use(cors({ origin: 'http://localhost:7000' }));
+app.use(cors({ origin: 'http://localhost:3000' }));
 
 // DB
 
