@@ -1,22 +1,22 @@
 # MCC-API
 
-![Screenie](README/home-screenshot.png)
 *Current index of a front-end consumer*
+![Screenie](README/home-screenshot.png)
 
 * [Overview](#overview)
 * [Requirements](#requirements)
 * [Installation and Setup](#installation-and-setup)
 * [But Why?](#but-why)
 
-### Note: in very early development
+### * Note: Very early development *
 
 # Overview
 
 An API providing data about the show Masterchef (US). Challenge result data was scraped from [Wikipedia](https://en.wikipedia.org/wiki/MasterChef_(American_season_1)#Elimination_table) and has been transformed into a set of API end-points.
 
-This API was built to serve a front-end, MCC-UI. This is a side project of mine that aggregates episode challenge data with recipe data so that it's navigable and queryable.
+This API was built to serve a front-end, [MCC-React](https://github.com/goneplaid/mcc-react). This is a side project of mine that aggregates episode challenge data with recipe data so that it's navigable and queryable.
 
-The idea is that this data can be mined to answer questions like what cooking technique for salmon has fared the best in all challenges where salmon was presented as a dish. Or what percentage of Italian dishes has Joe Bastianich shit on when judging? How many have truly amazed him and what were they? What is Gordon Ramsay's consistently favored dish across all seasons of MC? Is there one?
+The idea is that this data can be mined to answer questions like what cooking technique for salmon has fared the best in all challenges where salmon was presented as a dish. Or, what percentage of Italian dishes has Joe Bastianich hated completely? How many have truly amazed him? What is Gordon Ramsay's consistently favored dish across all seasons of Masterchef? Is there one?
 
 # Requirements
 
