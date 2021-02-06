@@ -34,7 +34,7 @@ const ContestantSerializer = require('./serializers/contestant');
 const EpisodeSerializer = require('./serializers/episode');
 const JudgeSerializer = require('./serializers/judge');
 
-const Reader = require('./util/reader');
+const CsvReader = require('./csv-reader');
 const challengeReader = require('./custom-readers/challenge');
 const participantReader = require('./custom-readers/participant');
 
@@ -88,12 +88,12 @@ async function createSeasons(maxSeason) {
 };
 
 function createJudges() {
-  const judgeReader = new Reader({
+  const judgeReader = new CsvReader({
     csvDirectory: path.join(__dirname, '../csv/judges.csv'),
     serializer: JudgeSerializer,
   });
 
-  return judgeReader.records.map(judgeData => {
+  return judgeReader.read().map(judgeData => {
     const judgeDocument = new JudgeModel(judgeData);
 
     judgeDocument.seasonNumbers = judgeData.seasonNumbers.split(',');
@@ -103,13 +103,13 @@ function createJudges() {
 }
 
 async function createContestants(seasonDocument) {
-  const contestantsReader = new Reader({
+  const contestantsReader = new CsvReader({
     season: seasonDocument.number,
     csvDirectory: path.join(__dirname, `../csv/contestants/season-${seasonDocument.number}.csv`),
     serializer: ContestantSerializer,
   });
 
-  const contestantDocuments = await Promise.all(contestantsReader.records.map(async contestantData => {
+  const contestantDocuments = await Promise.all(contestantsReader.read().map(async contestantData => {
     const contestantDocument = new ContestantModel(contestantData);
     contestantDocument.season = seasonDocument;
 
@@ -125,24 +125,25 @@ async function createContestants(seasonDocument) {
 
 async function createEpisodes(seasonDocument, contestantDocuments) {
   const season = seasonDocument.number;
-  const episodesReader = new Reader({
+  const episodesReader = new CsvReader({
     season,
     csvDirectory: path.join(__dirname, `../csv/episodes/season-${season}.csv`),
     serializer: EpisodeSerializer,
   });
 
+  const episodeRecords = episodesReader.read();
   const challengesReader = createCustomChallengeReader(season);
   const participantsReader = createCustomParticipantReader(season);
 
-  const episodeDocuments = await Promise.all(episodesReader.records.map(async episodeData => {
+  const episodeDocuments = await Promise.all(episodeRecords.map(async episodeData => {
     const episodeDocument = new EpisodeModel(episodeData);
     episodeDocument.season = seasonDocument;
 
     const episodeNumber = episodeDocument.number;
 
     const challengeDocuments = await createChallenges(
-      challengesReader.records.filter(challenge => challenge.episode === episodeNumber),
-      participantsReader.records.filter(participant => participant.episode === episodeNumber),
+      challengesReader.read().filter(challenge => challenge.episode === episodeNumber),
+      participantsReader.read().filter(participant => participant.episode === episodeNumber),
       episodeDocument,
       contestantDocuments
     );
@@ -200,7 +201,7 @@ async function createParticipants(participants, challengeDocument, contestantDoc
 const challengesCsvPath = (season) => `../csv/challenges/season-${season}.csv`;
 
 function createCustomChallengeReader(season) {
-  return new Reader({
+  return new CsvReader({
     csvDirectory: path.join(__dirname, challengesCsvPath(season)),
     parserOptions: {
       ltrim: true,
@@ -214,7 +215,7 @@ function createCustomChallengeReader(season) {
 }
 
 function createCustomParticipantReader(season) {
-  return new Reader({
+  return new CsvReader({
     csvDirectory: path.join(__dirname, challengesCsvPath(season)),
     parserOptions: {
       ltrim: true,

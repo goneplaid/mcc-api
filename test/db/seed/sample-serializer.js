@@ -1,11 +1,10 @@
-const Serializer = require('../util/serializer');
+const Serializer = require('../../../db/seed/util/serializer');
 const { API_URL } = require('../../../config/site.json');
 
 const AVATAR_URI = `${API_URL}/assets/images/judges`;
 
-class JudgeSerializer extends Serializer {
+class SampleSerializer extends Serializer {
   constructor(data) {
-    // Attribute names + order in CSV file
     super(data, [
       'name',
       'seasonNumbers'
@@ -15,10 +14,10 @@ class JudgeSerializer extends Serializer {
     const avatar = `${AVATAR_URI}/${camelizedName}.png`;
 
     this.avatar = avatar;
+    this.seasonNumbers = this.seasonNumbers.split(',');
   }
 
   serialize() {
-    // Everything that will be exported to the database
     return {
       name: this.name,
       avatar: this.avatar,
@@ -27,4 +26,4 @@ class JudgeSerializer extends Serializer {
   }
 }
 
-module.exports = JudgeSerializer;
+module.exports = SampleSerializer;
