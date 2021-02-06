@@ -1,9 +1,9 @@
-const Serializer = require('../util/serializer');
+const PojoSerializer = require('../pojo-serializer');
 const { API_URL } = require('../../../config/site.json');
 
 const AVATAR_URI = `${API_URL}/assets/images/judges`;
 
-class JudgeSerializer extends Serializer {
+class JudgeSerializer extends PojoSerializer {
   constructor(data) {
     // Attribute names + order in CSV file
     super(data, [

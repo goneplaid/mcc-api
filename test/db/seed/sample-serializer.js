@@ -1,4 +1,4 @@
-const Serializer = require('../../../db/seed/util/serializer');
+const Serializer = require('../../../db/seed/pojo-serializer');
 const { API_URL } = require('../../../config/site.json');
 
 const AVATAR_URI = `${API_URL}/assets/images/judges`;

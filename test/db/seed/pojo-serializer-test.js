@@ -3,7 +3,7 @@ const {
   describe, it
 } = require('mocha');
 
-const Serializer = require('../../../../db/seed/util/serializer');
+const Serializer = require('../../../db/seed/pojo-serializer');
 const { AssertionError } = assert;
 
 describe('db/seed/util', function () {

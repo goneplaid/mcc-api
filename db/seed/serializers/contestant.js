@@ -1,7 +1,7 @@
-const Serializer = require('../util/serializer');
+const PojoSerializer = require('../pojo-serializer');
 const AVATAR_PATH = '/assets/images/contestants/';
 
-class ContestantSerializer extends Serializer {
+class ContestantSerializer extends PojoSerializer {
   constructor(data, season) {
     super(data, [
       'name',

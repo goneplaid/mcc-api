@@ -1,6 +1,6 @@
-const Serializer = require('../util/serializer');
+const PojoSerializer = require('../pojo-serializer');
 
-class ChallengeSerializer extends Serializer {
+class ChallengeSerializer extends PojoSerializer {
   constructor(data) {
     super(data, [
       'episode',

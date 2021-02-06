@@ -1,6 +1,6 @@
-const Serializer = require('../util/serializer');
+const PojoSerializer = require('../pojo-serializer');
 
-class SeasonSerializer extends Serializer {
+class SeasonSerializer extends PojoSerializer {
   constructor(number) {
     super([number], ['number']);
 

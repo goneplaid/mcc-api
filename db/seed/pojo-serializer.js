@@ -1,7 +1,7 @@
 /*
-  Serializer.js
+  PojoSerializer.js
 
-  This simple class is meant to be used in conjunction with the Reader
+  This simple class is meant to be used in conjunction with the CsvReader
   class to proceess and hydrate simple POJO objects from array data.
 
   Consumers of this class simply need to setup an array of sequential
@@ -12,7 +12,7 @@
   the shape of the final serialized object should look like.
 */
 
-class Serializer {
+class PojoSerializer {
   constructor(data, keys) {
     for (let key of keys) {
       this[key] = data[keys.indexOf(key)];
@@ -24,4 +24,4 @@ class Serializer {
   }
 }
 
-module.exports = Serializer
+module.exports = PojoSerializer
