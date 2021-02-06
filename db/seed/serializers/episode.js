@@ -14,6 +14,7 @@ class EpisodeSerializer extends Serializer {
   serialize() {
     return {
       number: this.number,
+      seasonNumber: this.seasonNumber,
       name: this.name,
       airDate: this.airDate,
     };
