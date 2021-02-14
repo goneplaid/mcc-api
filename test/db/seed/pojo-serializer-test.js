@@ -6,7 +6,7 @@ const {
 const Serializer = require('../../../db/seed/pojo-serializer');
 const { AssertionError } = assert;
 
-describe('db/seed/util', function () {
+describe('db/seed', function () {
   describe('Serializer class', function () {
     class AndroidSerializer extends Serializer {
       constructor(data) {
