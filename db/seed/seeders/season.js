@@ -1,4 +1,4 @@
-const SeasonSerializer = require('../serializers/season');
+const PojoSerializer = require('../pojo-serializer');
 const SeasonModel = require('../../../app/models/season');
 
 class SeasonSeeder {
@@ -24,3 +24,15 @@ class SeasonSeeder {
 }
 
 module.exports = SeasonSeeder;
+
+class SeasonSerializer extends PojoSerializer {
+  constructor(number) {
+    super([number], ['number']);
+  }
+
+  serialize() {
+    return {
+      number: this.number,
+    };
+  }
+}
