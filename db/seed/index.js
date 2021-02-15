@@ -30,6 +30,8 @@
 const mongoose = require('mongoose');
 const path = require('path');
 
+const SeasonSeeder = require('./seeders/season');
+
 require('../../app/lib/connect-db')();
 
 const SEASONS_TO_PROCESS = 2;
@@ -42,7 +44,9 @@ async function seedDatabase(maxSeason) {
   console.log('All collections purged');
 
   try {
-    await seasonSeeder.seed(maxSeason);
+    const seasons = new SeasonSeeder(maxSeason);
+
+    await seasons.seed();
 
     /*
     await judgeSeeder.seed({
