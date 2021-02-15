@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// SCHEMA
 const schema = new Schema({
   name: {
     type: Schema.Types.String,
@@ -12,8 +11,8 @@ const schema = new Schema({
     required: true
   },
   seasons: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Season'
+    type: Schema.Types.String,
+    required: true
   }],
 });
 

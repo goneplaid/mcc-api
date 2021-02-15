@@ -31,6 +31,7 @@ const mongoose = require('mongoose');
 const path = require('path');
 
 const SeasonSeeder = require('./seeders/season');
+const JudgeSeeder = require('./seeders/judge');
 
 require('../../app/lib/connect-db')();
 
@@ -41,20 +42,18 @@ seedDatabase(SEASONS_TO_PROCESS);
 async function seedDatabase(maxSeason) {
   purgeAllCollections();
 
-  console.log('All collections purged');
+  console.log('All collections purged!!');
 
   try {
     const seasons = new SeasonSeeder(maxSeason);
 
     await seasons.seed();
 
-    /*
-    await judgeSeeder.seed({
-      maxSeason,
-      data: judgeCsvData,
-      seasons: seasonSeeder.documents,
-    });
+    const judges = new JudgeSeeder(path.join(__dirname, '../csv/judges.csv'));
 
+    await judges.seed();
+
+    /*
     await contestantSeeder.seed({
       maxSeason,
       csvPath: contestantCsvPath,

@@ -18,7 +18,7 @@ class SeasonSeeder {
 
       this.documents.push(document);
 
-      console.log(`Season ${document.number} created!`);
+      console.log(`Season ${document.number} created.`);
     }
   }
 }
