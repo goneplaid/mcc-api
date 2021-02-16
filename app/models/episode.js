@@ -18,6 +18,10 @@ const schema = new Schema({
     type: Schema.Types.String,
     required: true
   },
+  seasonRef: {
+    type: Schema.Types.ObjectId,
+    ref: 'Season'
+  },
 });
 
 module.exports = mongoose.model('Episode', schema);

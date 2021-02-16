@@ -9,7 +9,7 @@ class EpisodeSeeder {
     this.documents = [];
   }
 
-  async seed() {
+  async seed(seasonDocument) {
     const episodesReader = new CsvReader({
       season: this.season,
       csvDirectory: this.csvPath,
@@ -18,6 +18,8 @@ class EpisodeSeeder {
 
     for (let data of episodesReader.read()) {
       const document = new EpisodeModel(data);
+      
+      document.seasonRef = seasonDocument;
 
       await document.save();
 

@@ -37,6 +37,38 @@ class SeasonSeeder {
       console.log(`Judge documents related to season ${season.number}.`);
     }
   }
+
+  async relateEpisodes(episodeDocuments) {
+    for (let season of this.documents) {
+      const episodes = episodeDocuments.filter(episode => {
+        return episode.season === season.number;
+      });
+
+      if (!episodes.length) return;
+
+      season.episodeRefs = episodes;
+
+      await season.save();
+
+      console.log(`Episode documents related to season ${season.number}.`);
+    }
+  }
+
+  async relateContestants(contestantDocuments) {
+    for (let season of this.documents) {
+      const contestants = contestantDocuments.filter(episode => {
+        return episode.season === season.number;
+      });
+
+      if (!contestants.length) return;
+
+      season.contestantRefs = contestants;
+
+      await season.save();
+
+      console.log(`Contestant documents related to season ${season.number}.`);
+    }
+  }
 }
 
 module.exports = SeasonSeeder;

@@ -66,14 +66,16 @@ async function seedDatabase(maxSeason) {
         csvPath: path.join(__dirname, `../csv/episodes/season-${season}.csv`),
       });
 
-      await episodes.seed();
+      await episodes.seed(seasonToRelate = seasonDocument);
+      await seasons.relateEpisodes(episodes.documents);
 
       const contestants = new ContestantSeeder({
         season,
         csvPath: path.join(__dirname, `../csv/contestants/season-${season}.csv`),
       });
 
-      await contestants.seed();
+      await contestants.seed(seasonToRelate = seasonDocument);
+      await seasons.relateContestants(contestants.documents);
     }
   } catch (error) {
     console.error(error);

@@ -26,6 +26,10 @@ const schema = new Schema({
     type: Schema.Types.String,
     required: true
   },
+  seasonRef: {
+    type: Schema.Types.ObjectId,
+    ref: 'Season'
+  },
   participants: [{
     type: Schema.Types.ObjectId,
     ref: 'Participant'
