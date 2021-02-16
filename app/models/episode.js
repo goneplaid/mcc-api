@@ -15,13 +15,9 @@ const schema = new Schema({
     required: true
   },
   season: {
-    type: Schema.Types.ObjectId,
-    ref: 'Season'
+    type: Schema.Types.String,
+    required: true
   },
-  challenges: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Challenge'
-  }],
-})
+});
 
 module.exports = mongoose.model('Episode', schema);

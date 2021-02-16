@@ -32,9 +32,12 @@ const path = require('path');
 
 const SeasonSeeder = require('./seeders/season');
 const JudgeSeeder = require('./seeders/judge');
+const EpisodeSeeder = require('./seeders/episode');
 
 require('../../app/lib/connect-db')();
 
+// Update this to a process arg later on when we're dealing with reconstructing
+// more seasons.
 const SEASONS_TO_PROCESS = 2;
 
 seedDatabase(SEASONS_TO_PROCESS);
@@ -46,23 +49,29 @@ async function seedDatabase(maxSeason) {
 
   try {
     const seasons = new SeasonSeeder(maxSeason);
-
-    await seasons.seed();
-
     const judges = new JudgeSeeder(path.join(__dirname, '../csv/judges.csv'));
 
+    await seasons.seed();
     await judges.seed();
+
+    const episodeSeeders = [];
+
+    for (let seasonDocument of seasons.documents) {
+      const season = seasonDocument.number;
+      const episodes = new EpisodeSeeder({
+        season,
+        csvPath: path.join(__dirname, `../csv/episodes/season-${season}.csv`),
+      });
+
+      await episodes.seed();
+
+      episodeSeeders.push(episodes);
+    }
 
     /*
     await contestantSeeder.seed({
       maxSeason,
       csvPath: contestantCsvPath,
-      seasons: seasonSeeder.documents,
-    });
-
-    await episodeSeeder.seed({
-      maxSeason,
-      csvPath: episodeCsvPath,
       seasons: seasonSeeder.documents,
     });
 
