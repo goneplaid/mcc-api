@@ -23,8 +23,8 @@ const schema = new Schema({
     required: true
   },
   season: {
-    type: Schema.Types.ObjectId,
-    ref: 'Season'
+    type: Schema.Types.String,
+    required: true
   },
   participants: [{
     type: Schema.Types.ObjectId,

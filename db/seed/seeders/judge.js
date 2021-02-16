@@ -37,8 +37,8 @@ class JudgeSerializer extends PojoSerializer {
     ]);
 
     const camelizedName = this.name.toLowerCase().replace("'", '').replace(' ', '_');
-    const avatarUri = `${API_URL}/assets/images/judges`;
-    const avatar = `${avatarUri}/${camelizedName}.png`;
+    const avatarUrl = `${API_URL}/assets/images/judges`;
+    const avatar = `${avatarUrl}/${camelizedName}.png`;
 
     this.avatar = avatar;
   }

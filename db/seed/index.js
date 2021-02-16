@@ -33,6 +33,7 @@ const path = require('path');
 const SeasonSeeder = require('./seeders/season');
 const JudgeSeeder = require('./seeders/judge');
 const EpisodeSeeder = require('./seeders/episode');
+const ContestantSeeder = require('./seeders/contestant');
 
 require('../../app/lib/connect-db')();
 
@@ -55,34 +56,27 @@ async function seedDatabase(maxSeason) {
     await judges.seed();
 
     const episodeSeeders = [];
+    const contestantSeeders = [];
 
     for (let seasonDocument of seasons.documents) {
       const season = seasonDocument.number;
+
       const episodes = new EpisodeSeeder({
         season,
         csvPath: path.join(__dirname, `../csv/episodes/season-${season}.csv`),
       });
 
       await episodes.seed();
-
       episodeSeeders.push(episodes);
+
+      const contestants = new ContestantSeeder({
+        season,
+        csvPath: path.join(__dirname, `../csv/contestants/season-${season}.csv`),
+      });
+
+      await contestants.seed();
+      contestantSeeders.push(contestants);
     }
-
-    /*
-    await contestantSeeder.seed({
-      maxSeason,
-      csvPath: contestantCsvPath,
-      seasons: seasonSeeder.documents,
-    });
-
-    await challengeSeeder.seed({
-      maxSeason,
-      csvPath: challengeCsvPath,
-      episodes: episodeSeeder.documents,
-      contestants: contestantSeeder.documents,
-    });
-    */
-
   } catch (error) {
     console.error(error);
   }
@@ -90,9 +84,9 @@ async function seedDatabase(maxSeason) {
 
 async function purgeAllCollections() {
   await purgeCollection('seasons');
-  await purgeCollection('contestants');
-  await purgeCollection('episodes');
   await purgeCollection('judges');
+  await purgeCollection('episodes');
+  await purgeCollection('contestants');
   await purgeCollection('challenges');
   await purgeCollection('participants');
 }
@@ -104,4 +98,3 @@ async function purgeCollection(name) {
     }
   });
 }
-
