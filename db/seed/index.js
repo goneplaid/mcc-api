@@ -53,10 +53,7 @@ async function seedDatabase(maxSeason) {
     const judges = new JudgeSeeder(path.join(__dirname, '../csv/judges.csv'));
 
     await seasons.seed();
-    await judges.seed();
-
-    const episodeSeeders = [];
-    const contestantSeeders = [];
+    await judges.seed(seasons.documents);
 
     for (let seasonDocument of seasons.documents) {
       const season = seasonDocument.number;
@@ -67,7 +64,6 @@ async function seedDatabase(maxSeason) {
       });
 
       await episodes.seed();
-      episodeSeeders.push(episodes);
 
       const contestants = new ContestantSeeder({
         season,
@@ -75,7 +71,6 @@ async function seedDatabase(maxSeason) {
       });
 
       await contestants.seed();
-      contestantSeeders.push(contestants);
     }
   } catch (error) {
     console.error(error);
