@@ -34,7 +34,7 @@ class CsvReader {
     if (this.customReader) {
       records = this.customReader(data, this.dataReaderParams);
     } else {
-      for (const row of data) {
+      for (let row of data) {
         records.push(new this.Serializer(row, this.season).serialize());
       }
     }

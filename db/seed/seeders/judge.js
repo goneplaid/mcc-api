@@ -15,7 +15,7 @@ class JudgeSeeder {
       serializer: JudgeSerializer,
     });
 
-    await Promise.all(judgeReader.read().map(async data => {
+    for (let data of judgeReader.read()) {
       const document = new JudgeModel(data);
 
       await document.save();
@@ -23,11 +23,11 @@ class JudgeSeeder {
       this.documents.push(document);
 
       console.log(`Judge ${document.name} created.`);
-    }));
+    }
   }
 
   async relateSeasons(seasonDocuments) {
-    await Promise.all(this.documents.map(async judge => {
+    for (let judge of this.documents) {
       const seasons = seasonDocuments.filter(season => {
         return judge.seasons.includes(season.number);
       });
@@ -39,7 +39,7 @@ class JudgeSeeder {
       await judge.save();
 
       console.log(`Season documents related to judge ${judge.name}.`);
-    }));
+    }
   }
 }
 

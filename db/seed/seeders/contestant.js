@@ -17,7 +17,7 @@ class ContestantSeeder {
       serializer: ContestantSerializer,
     });
 
-    await Promise.all(contestantReader.read().map(async data => {
+    for (let data of contestantReader.read()) {
       const document = new ContestantModel(data);
 
       await document.save();
@@ -25,7 +25,7 @@ class ContestantSeeder {
       this.documents.push(document);
 
       console.log(`Contestant ${document.name} created.`);
-    }));
+    }
   }
 }
 

@@ -23,7 +23,7 @@ class SeasonSeeder {
   }
 
   async relateJudges(judgeDocuments) {
-    await Promise.all(this.documents.map(async season => {
+    for (let season of this.documents) {
       const judges = judgeDocuments.filter(judge => {
         return judge.seasons.includes(season.number);
       });
@@ -35,7 +35,7 @@ class SeasonSeeder {
       await season.save();
 
       console.log(`Judge documents related to season ${season.number}.`);
-    }));
+    }
   }
 }
 
