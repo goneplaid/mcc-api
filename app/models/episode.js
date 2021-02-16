@@ -6,14 +6,6 @@ const schema = new Schema({
     type: Schema.Types.String,
     required: true
   },
-  name: {
-    type: Schema.Types.String,
-    required: true
-  },
-  airDate: {
-    type: Schema.Types.String,
-    required: true
-  },
   season: {
     type: Schema.Types.String,
     required: true
@@ -21,6 +13,18 @@ const schema = new Schema({
   seasonRef: {
     type: Schema.Types.ObjectId,
     ref: 'Season'
+  },
+  challengeRefs: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Challenge'
+  }],
+  name: {
+    type: Schema.Types.String,
+    required: true
+  },
+  airDate: {
+    type: Schema.Types.String,
+    required: true
   },
 });
 

@@ -46,6 +46,7 @@ const SeasonSeeder = require('./seeders/season');
 const JudgeSeeder = require('./seeders/judge');
 const EpisodeSeeder = require('./seeders/episode');
 const ContestantSeeder = require('./seeders/contestant');
+const ChallengeSeeder = require('./seeders/challenge');
 
 require('../../app/lib/connect-db')();
 
@@ -88,6 +89,15 @@ async function seedDatabase(maxSeason) {
 
       await contestants.seed(seasonToRelate = seasonDocument);
       await seasons.relateContestants(contestants.documents);
+
+      const challenges = new ChallengeSeeder({
+        season,
+        csvPath: path.join(__dirname, `../csv/challenges/season-${season}.csv`),
+      });
+
+      await challenges.seed(seasonToRelate = seasonDocument);
+      await challenges.relateEpisodes(episodes.documents);
+      await episodes.relateChallenges(challenges.documents);
     }
   } catch (error) {
     console.error(error);

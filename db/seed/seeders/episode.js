@@ -18,7 +18,7 @@ class EpisodeSeeder {
 
     for (let data of episodesReader.read()) {
       const document = new EpisodeModel(data);
-      
+
       document.seasonRef = seasonDocument;
 
       await document.save();
@@ -26,6 +26,25 @@ class EpisodeSeeder {
       this.documents.push(document);
 
       console.log(`Episode ${document.number}, ${document.name}, created.`);
+    }
+  }
+
+  async relateChallenges(challengeDocuments) {
+    for (let episode of this.documents) {
+      const challenges = challengeDocuments.filter(challenge => {
+        if (challenge.episode === episode.number) return challenge;
+      });
+
+      if (!challenges.length) {
+        throw new Error(
+          `No challenge models for episode ${episode.number}!`
+        );
+      }
+
+      episode.challengeRefs = challenges;
+      episode.save();
+
+      console.log(`${challenges.length} challenges related to episode ${episode.number}.`);
     }
   }
 }
