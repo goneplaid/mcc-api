@@ -15,7 +15,7 @@ class JudgeSeeder {
       serializer: JudgeSerializer,
     });
 
-    judgeReader.read().map(async data => {
+    await Promise.all(judgeReader.read().map(async data => {
       const document = new JudgeModel(data);
 
       await document.save();
@@ -23,7 +23,7 @@ class JudgeSeeder {
       this.documents.push(document);
 
       console.log(`Judge ${document.name} created.`);
-    });
+    }));
   }
 }
 

@@ -16,7 +16,7 @@ class EpisodeSeeder {
       serializer: EpisodeSerializer,
     });
 
-    episodesReader.read().map(async data => {
+    await Promise.all(episodesReader.read().map(async data => {
       const document = new EpisodeModel(data);
 
       await document.save();
@@ -24,7 +24,7 @@ class EpisodeSeeder {
       this.documents.push(document);
 
       console.log(`Episode ${document.number}, ${document.name}, created.`);
-    });
+    }));
   }
 }
 
