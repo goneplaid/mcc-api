@@ -6,15 +6,15 @@ const schema = new Schema({
     type: Schema.Types.String,
     required: true
   },
-  judges: [{
+  judgeRefs: [{
     type: Schema.Types.ObjectId,
     ref: 'Judge'
   }],
-  contestants: [{
+  contestantRefs: [{
     type: Schema.Types.ObjectId,
     ref: 'Contestant'
   }],
-  episodes: [{
+  episodeRefs: [{
     type: Schema.Types.ObjectId,
     ref: 'Episode'
   }]

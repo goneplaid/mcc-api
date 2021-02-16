@@ -53,7 +53,10 @@ async function seedDatabase(maxSeason) {
     const judges = new JudgeSeeder(path.join(__dirname, '../csv/judges.csv'));
 
     await seasons.seed();
-    await judges.seed(seasons.documents);
+    await judges.seed();
+
+    await seasons.relateJudges(judges.documents);
+    await judges.relateSeasons(seasons.documents);
 
     for (let seasonDocument of seasons.documents) {
       const season = seasonDocument.number;

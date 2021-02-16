@@ -14,6 +14,10 @@ const schema = new Schema({
     type: Schema.Types.String,
     required: true
   }],
+  seasonRefs: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Season'
+  }],
 });
 
 module.exports = mongoose.model('Judge', schema);

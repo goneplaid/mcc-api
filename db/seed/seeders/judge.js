@@ -25,6 +25,22 @@ class JudgeSeeder {
       console.log(`Judge ${document.name} created.`);
     }));
   }
+
+  async relateSeasons(seasonDocuments) {
+    await Promise.all(this.documents.map(async judge => {
+      const seasons = seasonDocuments.filter(season => {
+        return judge.seasons.includes(season.number);
+      });
+
+      if (!seasons.length) return;
+
+      judge.seasonRefs = seasons;
+
+      await judge.save();
+
+      console.log(`Season documents related to judge ${judge.name}.`);
+    }));
+  }
 }
 
 module.exports = JudgeSeeder;
