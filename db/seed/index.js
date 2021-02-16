@@ -1,6 +1,4 @@
 /*
-  Script: db/seed/index.js
-
   OVERVIEW:
 
   This script takes CSV data that was manually scrapped from Wikipedia and uses
@@ -25,6 +23,20 @@
   * Judges:
     A single CSV file that stores judges from all seasons as most are recurring
     participants to one, many or all (Gordon) seasons.
+
+  EXPLANATION OF PROCESS:
+
+  This script is based around the idea of individual seeders for the different
+  types of models described above.
+
+  Each "seeder" is handed a path to a csv file and season to which they belong,
+  when needed, and is called to seed their data. Each seeder then uses the
+  CsvReader and PojoSerializer classes to process each record and save it to the
+  database using the application models in app/models.
+  
+  After each season model and their related models like episodes, contestants,
+  and judges have been saved, they are then related by internal methods to each
+  seeder class.
 */
 
 const mongoose = require('mongoose');
