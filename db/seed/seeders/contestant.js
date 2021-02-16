@@ -40,15 +40,20 @@ class ContestantSerializer extends PojoSerializer {
       'occupation',
     ]);
 
-    const camelizedName = this.name.toLowerCase().replace("'", '').replace(/ /g, "_");
-    const avatarUrl = `${API_URL}/assets/images/contestants`;
-    const avatar = `${avatarUrl}/season_${season}/${camelizedName}.jpg`;
-
-    this.avatar = avatar;
     this.season = season;
   }
 
   serialize() {
+    const camelizedName = this.name
+      .toLowerCase()
+      .replace("'", '')
+      .replace(/ /g, "_");
+
+    const avatarUrl = `${API_URL}/assets/images/contestants`;
+    const avatar = `${avatarUrl}/season_${this.season}/${camelizedName}.jpg`;
+
+    this.avatar = avatar;
+
     return {
       name: this.name,
       age: this.age,

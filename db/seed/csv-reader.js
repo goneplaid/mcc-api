@@ -28,13 +28,14 @@ class CsvReader {
   read() {
     const file = this.readFile(this.csvDirectory);
     const data = this.parseCsv(file, this.parserOptions);
+
     let records = [];
 
     if (this.customReader) {
       records = this.customReader(data, this.dataReaderParams);
     } else {
       for (const row of data) {
-        records.push(new this.Serializer(row, this.season));
+        records.push(new this.Serializer(row, this.season).serialize());
       }
     }
 

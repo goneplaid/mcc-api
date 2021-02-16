@@ -35,15 +35,15 @@ class JudgeSerializer extends PojoSerializer {
       'name',
       'seasons',
     ]);
+  }
 
+  serialize() {
     const camelizedName = this.name.toLowerCase().replace("'", '').replace(' ', '_');
     const avatarUrl = `${API_URL}/assets/images/judges`;
     const avatar = `${avatarUrl}/${camelizedName}.png`;
 
     this.avatar = avatar;
-  }
 
-  serialize() {
     return {
       name: this.name,
       seasons: this.seasons.split(','),
