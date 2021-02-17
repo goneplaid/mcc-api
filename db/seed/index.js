@@ -68,36 +68,38 @@ async function seedDatabase(maxSeason) {
     await seasons.seed();
     await judges.seed();
 
-    await seasons.relateJudges(judges.documents);
-    await judges.relateSeasons(seasons.documents);
-
     for (let seasonDocument of seasons.documents) {
       const season = seasonDocument.number;
+      const fileName = `season-${season}.csv`;
 
       const episodes = new EpisodeSeeder({
         season,
-        csvPath: path.join(__dirname, `../csv/episodes/season-${season}.csv`),
+        csvPath: path.join(__dirname, `../csv/episodes/${fileName}`),
       });
 
       await episodes.seed(seasonToRelate = seasonDocument);
-      await seasons.relateEpisodes(episodes.documents);
 
       const contestants = new ContestantSeeder({
         season,
-        csvPath: path.join(__dirname, `../csv/contestants/season-${season}.csv`),
+        csvPath: path.join(__dirname, `../csv/contestants/${fileName}`),
       });
 
       await contestants.seed(seasonToRelate = seasonDocument);
-      await seasons.relateContestants(contestants.documents);
 
       const challenges = new ChallengeSeeder({
         season,
-        csvPath: path.join(__dirname, `../csv/challenges/season-${season}.csv`),
+        csvPath: path.join(__dirname, `../csv/challenges/${fileName}`),
       });
 
       await challenges.seed(seasonToRelate = seasonDocument);
-      await challenges.relateEpisodes(episodes.documents);
-      await episodes.relateChallenges(challenges.documents);
+
+      await relateDocuments({
+        seasons,
+        judges,
+        episodes,
+        contestants,
+        challenges,
+      });
     }
   } catch (error) {
     console.error(error);
@@ -119,4 +121,22 @@ async function purgeCollection(name) {
       console.error(e.message);
     }
   });
+}
+
+async function relateDocuments(documents) {
+  const {
+    seasons,
+    judges,
+    episodes,
+    contestants,
+    challenges
+  } = documents;
+
+  await seasons.relateJudges(judges.documents);
+  await seasons.relateEpisodes(episodes.documents);
+  await seasons.relateContestants(contestants.documents);
+
+  await judges.relateSeasons(seasons.documents);
+  await challenges.relateEpisodes(episodes.documents);
+  await episodes.relateChallenges(challenges.documents);
 }
