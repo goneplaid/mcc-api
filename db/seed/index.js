@@ -57,7 +57,7 @@ const SEASONS_TO_PROCESS = 2;
 seedDatabase(SEASONS_TO_PROCESS);
 
 async function seedDatabase(maxSeason) {
-  purgeAllCollections();
+  await purgeAllCollections();
 
   console.log('All collections purged!!');
 
